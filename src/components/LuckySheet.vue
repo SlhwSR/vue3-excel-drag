@@ -19,10 +19,9 @@
   </div>
   <div class="list">
     <draggable v-model="myArray" chosenClass="chosen" forceFallback="true" group="people" animation="1000"
-    itemKey="drag"
-      @start="onStart" @end="onEnd">
+      itemKey="drag" @start="onStart" @end="onEnd">
       <!-- <transition-group> -->
-        <div class="item" v-for="element in myArray" :key="element.id">{{ element.name }}</div>
+      <div class="item" v-for="element in myArray" :key="element.id">{{ element.name }}</div>
       <!-- </transition-group> -->
     </draggable>
   </div>
@@ -69,10 +68,10 @@ const options = ref([
     value: 'https://minio.cnbabylon.com/public/luckysheet/Blue%20mileage%20and%20expense%20report.xlsx'
   }
 ])
-const onStart=(e)=>{
+const onStart = (e) => {
   console.log(e);
 }
-const onEnd=(e)=>{
+const onEnd = (e) => {
   console.log(e);
 }
 const x = ref(0);
@@ -203,10 +202,11 @@ onBeforeUnmount(() => {
 
 <style  scoped>
 #luckysheet {
+  /* margin-top: 1000px; */
   margin: 0px;
   padding: 0px;
   position: absolute;
-  width: 85%;
+  width: 100%;
   left: 0px;
   top: 30px;
   bottom: 0px;
@@ -230,10 +230,12 @@ onBeforeUnmount(() => {
   justify-content: center;
   display: flex;
 }
+
 .list {
   /* background-color: red !important; */
   z-index: 9999;
 }
+
 .item {
   padding: 6px;
   background-color: #fdfdfd;
