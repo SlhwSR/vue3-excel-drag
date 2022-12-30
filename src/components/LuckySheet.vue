@@ -10,9 +10,21 @@
         {{ option.text }}
       </option>
     </select>
-
     <a href="javascript:void(0)" @click="downloadExcel">Download source xlsx file</a>
-    {{ x }}
+    <!-- {{ x }} -->
+    <Space>
+      <span class="count">111</span>
+      <span>222</span>
+    </Space>
+  </div>
+  <div class="list">
+    <draggable v-model="myArray" chosenClass="chosen" forceFallback="true" group="people" animation="1000"
+    itemKey="drag"
+      @start="onStart" @end="onEnd">
+      <!-- <transition-group> -->
+        <div class="item" v-for="element in myArray" :key="element.id">{{ element.name }}</div>
+      <!-- </transition-group> -->
+    </draggable>
   </div>
   <div id="luckysheet"></div>
   <div v-show="isMaskShow" id="tip">Downloading</div>
@@ -23,6 +35,9 @@ import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { exportExcel } from './export'
 import LuckyExcel from 'luckyexcel'
 import logo from '@/assets/logo.png'
+import { Space } from 'ant-design-vue'
+import { addLongtabListener } from '@/utils/longpress'
+import draggable from 'vuedraggable'
 const isMaskShow = ref(false)
 const selected = ref('')
 const jsonData = ref({})
@@ -54,8 +69,21 @@ const options = ref([
     value: 'https://minio.cnbabylon.com/public/luckysheet/Blue%20mileage%20and%20expense%20report.xlsx'
   }
 ])
-const x=ref(0);
-const y=ref(0);
+const onStart=(e)=>{
+  console.log(e);
+}
+const onEnd=(e)=>{
+  console.log(e);
+}
+const x = ref(0);
+const y = ref(0);
+const isdrag = ref(false)
+const myArray = ref([
+  { people: 'cn', id: 1, name: 'www.itxst.com' },
+  { people: 'cn', id: 2, name: 'www.baidu.com' },
+  { people: 'cn', id: 3, name: 'www.taobao.com' },
+  { people: 'us', id: 4, name: 'www.google.com' }
+])
 const loadExcel = (evt) => {
   const files = evt.target.files
   if (files == null || files.length == 0) {
@@ -67,7 +95,7 @@ const loadExcel = (evt) => {
   let suffixArr = name.split('.'),
     suffix = suffixArr[suffixArr.length - 1]
   if (suffix != 'xlsx') {
-    alert('文件类型错误!') 
+    alert('文件类型错误!')
     return
   }
   LuckyExcel.transformExcelToLucky(files[0], function (exportJson, luckysheetfile) {
@@ -87,7 +115,7 @@ const loadExcel = (evt) => {
       userInfo: exportJson.info.name.creator
     })
   })
-} 
+}
 const selectExcel = (evt) => {
   const value = selected.value
   const name = evt.target.options[evt.target.selectedIndex].innerText
@@ -140,35 +168,35 @@ const downloadExcel = () => {
 onMounted(() => {
   luckysheet.create({
     container: 'luckysheet',
-    lang:"zh",
-    title:"Bmos-excel",
-    userName:"Bmos-excel",
-    userImage:logo,
-    hook:{
-      cellMousedown:(a,b,c,ctx)=>{
+    lang: "zh",
+    title: "Bmos-excel",
+    userName: "Bmos-excel",
+    userImage: logo,
+    hook: {
+      cellMousedown: (a, b, c, ctx) => {
         // console.log(a);
         // console.log(b);
         // console.log(c);
       },
-      sheetMousemove:(a,b,c,d)=>{
+      sheetMousemove: (a, b, c, d) => {
         // console.log(b);
       },
-      sheetMouseup:(a,{r,c},d)=>{
+      sheetMouseup: (a, { r, c }, d) => {
         // console.log(b);
-        luckysheet.setCellValue(r,c,123)
+        addLongtabListener(document.querySelector(".count"), () => {
+          console.log(111);
+        })
+        luckysheet.setCellValue(r, c, 123)
       }
     }
   })
-  window.addEventListener("mousemove",({pageX,pageY})=>{
-    //  console.log(pageX);
-    //  console.log(pageY);
-     x.value=pageX
-     y.value=pageY
+  window.addEventListener("mousemove", ({ pageX, pageY }) => {
+    x.value = pageX
+    y.value = pageY
   })
   document.querySelector(".luckysheet-share-logo").remove()
 })
-
-onBeforeUnmount(()=>{
+onBeforeUnmount(() => {
   window.removeEventListener("mousemove")
 })
 </script>
@@ -178,7 +206,7 @@ onBeforeUnmount(()=>{
   margin: 0px;
   padding: 0px;
   position: absolute;
-  width: 100%;
+  width: 85%;
   left: 0px;
   top: 30px;
   bottom: 0px;
@@ -201,5 +229,21 @@ onBeforeUnmount(()=>{
   align-items: center;
   justify-content: center;
   display: flex;
+}
+.list {
+  /* background-color: red !important; */
+  z-index: 9999;
+}
+.item {
+  padding: 6px;
+  background-color: #fdfdfd;
+  border: solid 1px #eee;
+  margin-bottom: 10px;
+  cursor: move;
+}
+
+/*选中样式*/
+.chosen {
+  border: solid 2px #3089dc !important;
 }
 </style>

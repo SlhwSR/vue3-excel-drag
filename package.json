@@ -12,7 +12,7 @@
     "vue3",
     "vue",
     "table"
-  ], 
+  ],
   "description": "luckysheet + Vue3 + Vite demo",
   "scripts": {
     "dev": "vite",
@@ -24,7 +24,8 @@
     "exceljs": "^4.3.0",
     "file-saver": "^2.0.5",
     "luckyexcel": "^1.0.1",
-    "vue": "^3.2.25"
+    "vue": "^3.2.25",
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.2.0",
