@@ -6,144 +6,168 @@
 
     <select v-model="selected" @change="selectExcel">
       <option disabled value="">Choose</option>
-      <option v-for="option in options" :key="option.text" :value="option.value">
+      <option
+        v-for="option in options"
+        :key="option.text"
+        :value="option.value"
+      >
         {{ option.text }}
       </option>
     </select>
-    <a href="javascript:void(0)" @click="downloadExcel">Download source xlsx file</a>
+    <a href="javascript:void(0)" @click="downloadExcel"
+      >Download source xlsx file</a
+    >
     <!-- {{ x }} -->
     <Space>
       <span class="count">111</span>
       <span>222</span>
     </Space>
   </div>
-  <div class="list">
-    <draggable v-model="myArray" chosenClass="chosen" forceFallback="true" group="people" animation="1000"
-      itemKey="drag" @start="onStart" @end="onEnd">
-      <!-- <transition-group> -->
-      <div class="item" v-for="element in myArray" :key="element.id">{{ element.name }}</div>
-      <!-- </transition-group> -->
-    </draggable>
-  </div>
   <div id="luckysheet"></div>
   <div v-show="isMaskShow" id="tip">Downloading</div>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
-import { exportExcel } from './export'
-import LuckyExcel from 'luckyexcel'
-import logo from '@/assets/logo.png'
-import { Space } from 'ant-design-vue'
-import { addLongtabListener } from '@/utils/longpress'
-import draggable from 'vuedraggable'
-const isMaskShow = ref(false)
-const selected = ref('')
-const jsonData = ref({})
+import { ref, onMounted, onBeforeUnmount, watch, onUpdated } from "vue";
+import { exportExcel } from "./export";
+import LuckyExcel from "luckyexcel";
+import logo from "@/assets/logo.png";
+import { Space } from "ant-design-vue";
+import { addLongtabListener } from "@/utils/longpress";
+const isMaskShow = ref(false);
+const selected = ref("");
+const jsonData = ref({});
+const props = defineProps(["isdrag", "count"]);
 const options = ref([
-  { text: 'Money Manager.xlsx', value: 'https://minio.cnbabylon.com/public/luckysheet/money-manager-2.xlsx' },
   {
-    text: 'Activity costs tracker.xlsx',
-    value: 'https://minio.cnbabylon.com/public/luckysheet/Activity%20costs%20tracker.xlsx'
+    text: "Money Manager.xlsx",
+    value: "https://minio.cnbabylon.com/public/luckysheet/money-manager-2.xlsx",
   },
   {
-    text: 'House cleaning checklist.xlsx',
-    value: 'https://minio.cnbabylon.com/public/luckysheet/House%20cleaning%20checklist.xlsx'
+    text: "Activity costs tracker.xlsx",
+    value:
+      "https://minio.cnbabylon.com/public/luckysheet/Activity%20costs%20tracker.xlsx",
   },
   {
-    text: 'Student assignment planner.xlsx',
-    value: 'https://minio.cnbabylon.com/public/luckysheet/Student%20assignment%20planner.xlsx'
+    text: "House cleaning checklist.xlsx",
+    value:
+      "https://minio.cnbabylon.com/public/luckysheet/House%20cleaning%20checklist.xlsx",
   },
   {
-    text: 'Credit card tracker.xlsx',
-    value: 'https://minio.cnbabylon.com/public/luckysheet/Credit%20card%20tracker.xlsx'
-  },
-  { text: 'Blue timesheet.xlsx', value: 'https://minio.cnbabylon.com/public/luckysheet/Blue%20timesheet.xlsx' },
-  {
-    text: 'Student calendar (Mon).xlsx',
-    value: 'https://minio.cnbabylon.com/public/luckysheet/Student%20calendar%20%28Mon%29.xlsx'
+    text: "Student assignment planner.xlsx",
+    value:
+      "https://minio.cnbabylon.com/public/luckysheet/Student%20assignment%20planner.xlsx",
   },
   {
-    text: 'Blue mileage and expense report.xlsx',
-    value: 'https://minio.cnbabylon.com/public/luckysheet/Blue%20mileage%20and%20expense%20report.xlsx'
-  }
-])
+    text: "Credit card tracker.xlsx",
+    value:
+      "https://minio.cnbabylon.com/public/luckysheet/Credit%20card%20tracker.xlsx",
+  },
+  {
+    text: "Blue timesheet.xlsx",
+    value:
+      "https://minio.cnbabylon.com/public/luckysheet/Blue%20timesheet.xlsx",
+  },
+  {
+    text: "Student calendar (Mon).xlsx",
+    value:
+      "https://minio.cnbabylon.com/public/luckysheet/Student%20calendar%20%28Mon%29.xlsx",
+  },
+  {
+    text: "Blue mileage and expense report.xlsx",
+    value:
+      "https://minio.cnbabylon.com/public/luckysheet/Blue%20mileage%20and%20expense%20report.xlsx",
+  },
+]);
 const onStart = (e) => {
   console.log(e);
-}
+};
 const onEnd = (e) => {
   console.log(e);
-}
+};
+onUpdated(() => {
+  console.log(props);
+});
 const x = ref(0);
 const y = ref(0);
-const isdrag = ref(false)
 const myArray = ref([
-  { people: 'cn', id: 1, name: 'www.itxst.com' },
-  { people: 'cn', id: 2, name: 'www.baidu.com' },
-  { people: 'cn', id: 3, name: 'www.taobao.com' },
-  { people: 'us', id: 4, name: 'www.google.com' }
-])
+  { people: "cn", id: 1, name: "www.itxst.com" },
+  { people: "cn", id: 2, name: "www.baidu.com" },
+  { people: "cn", id: 3, name: "www.taobao.com" },
+  { people: "us", id: 4, name: "www.google.com" },
+]);
 const loadExcel = (evt) => {
-  const files = evt.target.files
+  const files = evt.target.files;
   if (files == null || files.length == 0) {
-    alert('No files wait for import')
-    return
+    alert("No files wait for import");
+    return;
   }
 
-  let name = files[0].name
-  let suffixArr = name.split('.'),
-    suffix = suffixArr[suffixArr.length - 1]
-  if (suffix != 'xlsx') {
-    alert('文件类型错误!')
-    return
+  let name = files[0].name;
+  let suffixArr = name.split("."),
+    suffix = suffixArr[suffixArr.length - 1];
+  if (suffix != "xlsx") {
+    alert("文件类型错误!");
+    return;
   }
-  LuckyExcel.transformExcelToLucky(files[0], function (exportJson, luckysheetfile) {
-    if (exportJson.sheets == null || exportJson.sheets.length == 0) {
-      alert('Failed to read the content of the excel file, currently does not support xls files!')
-      return
+  LuckyExcel.transformExcelToLucky(
+    files[0],
+    function (exportJson, luckysheetfile) {
+      if (exportJson.sheets == null || exportJson.sheets.length == 0) {
+        alert(
+          "Failed to read the content of the excel file, currently does not support xls files!"
+        );
+        return;
+      }
+      console.log("exportJson", exportJson);
+      jsonData.value = exportJson;
+
+      window.luckysheet.destroy();
+      window.luckysheet.create({
+        container: "luckysheet", //luckysheet is the container id
+        showinfobar: false,
+        data: exportJson.sheets,
+        title: exportJson.info.name,
+        userInfo: exportJson.info.name.creator,
+      });
     }
-    console.log('exportJson', exportJson)
-    jsonData.value = exportJson
-
-    window.luckysheet.destroy()
-    window.luckysheet.create({
-      container: 'luckysheet', //luckysheet is the container id
-      showinfobar: false,
-      data: exportJson.sheets,
-      title: exportJson.info.name,
-      userInfo: exportJson.info.name.creator
-    })
-  })
-}
+  );
+};
 const selectExcel = (evt) => {
-  const value = selected.value
-  const name = evt.target.options[evt.target.selectedIndex].innerText
+  const value = selected.value;
+  const name = evt.target.options[evt.target.selectedIndex].innerText;
 
-  if (value == '') {
-    return
+  if (value == "") {
+    return;
   }
-  isMaskShow.value = true
+  isMaskShow.value = true;
 
-  LuckyExcel.transformExcelToLuckyByUrl(value, name, (exportJson, luckysheetfile) => {
-    if (exportJson.sheets == null || exportJson.sheets.length == 0) {
-      alert('Failed to read the content of the excel file, currently does not support xls files!')
-      return
+  LuckyExcel.transformExcelToLuckyByUrl(
+    value,
+    name,
+    (exportJson, luckysheetfile) => {
+      if (exportJson.sheets == null || exportJson.sheets.length == 0) {
+        alert(
+          "Failed to read the content of the excel file, currently does not support xls files!"
+        );
+        return;
+      }
+      console.log("exportJson", exportJson);
+      jsonData.value = exportJson;
+
+      isMaskShow.value = false;
+      window.luckysheet.destroy();
+
+      window.luckysheet.create({
+        container: "luckysheet", //luckysheet is the container id
+        showinfobar: false,
+        data: exportJson.sheets,
+        title: exportJson.info.name,
+        userInfo: exportJson.info.name.creator,
+      });
     }
-    console.log('exportJson', exportJson)
-    jsonData.value = exportJson
-
-    isMaskShow.value = false
-    window.luckysheet.destroy()
-
-    window.luckysheet.create({
-      container: 'luckysheet', //luckysheet is the container id
-      showinfobar: false,
-      data: exportJson.sheets,
-      title: exportJson.info.name,
-      userInfo: exportJson.info.name.creator
-    })
-  })
-}
+  );
+};
 const downloadExcel = () => {
   // const value = selected.value;;
   //
@@ -160,13 +184,13 @@ const downloadExcel = () => {
   //     document.body.appendChild(elemIF);
   // }
   // elemIF.src = value;
-  exportExcel(luckysheet.getAllSheets(), '下载')
-}
+  exportExcel(luckysheet.getAllSheets(), "下载");
+};
 
 // !!! create luckysheet after mounted
 onMounted(() => {
   luckysheet.create({
-    container: 'luckysheet',
+    container: "luckysheet",
     lang: "zh",
     title: "Bmos-excel",
     userName: "Bmos-excel",
@@ -182,25 +206,33 @@ onMounted(() => {
       },
       sheetMouseup: (a, { r, c }, d) => {
         // console.log(b);
-        addLongtabListener(document.querySelector(".count"), () => {
-          console.log(111);
-        })
-        luckysheet.setCellValue(r, c, 123)
-      }
-    }
-  })
+        // addLongtabListener(document.querySelector(".count"), () => {
+        //   console.log(111);
+        // });
+        // console.log(props);
+        if (props.isdrag === true) {
+          luckysheet.setCellValue(r, c, props.count);
+          props.isdrag = false;
+        }
+      },
+    },
+  });
   window.addEventListener("mousemove", ({ pageX, pageY }) => {
-    x.value = pageX
-    y.value = pageY
-  })
-  document.querySelector(".luckysheet-share-logo").remove()
-})
+    x.value = pageX;
+    y.value = pageY;
+  });
+  document.querySelector(".luckysheet-share-logo").remove();
+  document.onselectstart = new Function("event.returnValue=false");
+  console.log("---------Props");
+  // console.log(isdrag);
+  console.log(props);
+});
 onBeforeUnmount(() => {
-  window.removeEventListener("mousemove")
-})
+  window.removeEventListener("mousemove");
+});
 </script>
 
-<style  scoped>
+<style scoped>
 #luckysheet {
   /* margin-top: 1000px; */
   margin: 0px;
