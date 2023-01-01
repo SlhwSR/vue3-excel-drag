@@ -65,6 +65,9 @@ const mouseOver = () => {
     console.log("出来了哦");
   }
 };
+const cancelDrag = () => {
+  isdrag.value = false;
+};
 </script>
 <template>
   <Row :gutter="24">
@@ -86,7 +89,11 @@ const mouseOver = () => {
       </List>
     </Col>
     <Col style="width: 96%">
-      <LuckySheet :isdrag="isdrag" :count="currentCount" />
+      <LuckySheet
+        :isdrag="isdrag"
+        :count="currentCount"
+        @cancelDrag="cancelDrag"
+      />
     </Col>
   </Row>
 </template>

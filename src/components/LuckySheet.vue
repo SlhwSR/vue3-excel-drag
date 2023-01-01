@@ -186,7 +186,7 @@ const downloadExcel = () => {
   // elemIF.src = value;
   exportExcel(luckysheet.getAllSheets(), "下载");
 };
-
+const emitS = defineEmits(["cancelDrag"]);
 // !!! create luckysheet after mounted
 onMounted(() => {
   luckysheet.create({
@@ -212,8 +212,16 @@ onMounted(() => {
         // console.log(props);
         if (props.isdrag === true) {
           luckysheet.setCellValue(r, c, props.count);
-          props.isdrag = false;
+          console.log("-*----------变化");
+          // emitS();
+          emitS("cancelDrag", () => {
+            console.log("我尽力了");
+          });
+          // props.isdrag = false;
+          return;
+          // console.log(props.isdrag);
         }
+        // props.isdrag = false;
       },
     },
   });
