@@ -18,10 +18,6 @@
       >Download source xlsx file</a
     >
     <!-- {{ x }} -->
-    <Space>
-      <span class="count">111</span>
-      <span>222</span>
-    </Space>
   </div>
   <div id="luckysheet"></div>
   <div v-show="isMaskShow" id="tip">Downloading</div>
