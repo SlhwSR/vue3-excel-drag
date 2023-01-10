@@ -1,8 +1,8 @@
-<script setup>
+<script setup lang="jsx">
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
 import LuckySheet from "./components/LuckySheet.vue";
-import { Col, List, Row } from "ant-design-vue";
+import { Col, List, Row, Tree } from "ant-design-vue";
 import { ref } from "vue";
 const currentCount = ref(0);
 const list = ref([
@@ -49,6 +49,75 @@ const hanleList = (count) => {
   isdrag.value = true;
   currentCount.value = count;
 };
+const treeData = ref([
+  {
+    title: "parent 1",
+    key: "0-0",
+    children: [
+      {
+        title: "parent 1-0",
+        key: "0-0-0",
+        children: [
+          {
+            title: "leaf",
+            key: "0-0-0-0",
+          },
+          {
+            key: "0-0-0-1",
+          },
+          {
+            title: "leaf",
+            key: "0-0-0-2",
+          },
+        ],
+      },
+      {
+        title: "parent 1-1",
+        key: "0-0-1",
+        children: [
+          {
+            title: "leaf",
+            key: "0-0-1-0",
+          },
+        ],
+      },
+      {
+        title: "parent 1-2",
+        key: "0-0-2",
+        children: [
+          {
+            title: "leaf 1",
+            key: "0-0-2-0",
+          },
+          {
+            title: "leaf 2",
+            key: "0-0-2-1",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: "parent 2",
+    key: "0-1",
+    children: [
+      {
+        title: "parent 2-0",
+        key: "0-1-0",
+        children: [
+          {
+            title: "leaf",
+            key: "0-1-0-0",
+          },
+          {
+            title: "leaf",
+            key: "0-1-0-1",
+          },
+        ],
+      },
+    ],
+  },
+]);
 const overDrag = () => {
   if (isdrag.value === true) {
     console.log("-拖拽中");
@@ -71,8 +140,21 @@ const cancelDrag = () => {
 </script>
 <template>
   <Row :gutter="24">
-    <Col>
-      <List>
+    <Col style="height: 900px">
+      <!-- <List.Item
+        @mouseover="mouseOver"
+        @mouseleave="overDrag"
+        v-for="(item, index) in list"
+        :key="item.id"
+        ><div
+          style="cursor: pointer"
+          @mousedown="hanleList(item.count)"
+          @mouseup="mouseUp"
+        >
+          {{ item.count }}
+        </div>
+      </List.Item> -->
+      <Tree>
         <List.Item
           @mouseover="mouseOver"
           @mouseleave="overDrag"
@@ -84,9 +166,9 @@ const cancelDrag = () => {
             @mouseup="mouseUp"
           >
             {{ item.count }}
-          </div></List.Item
-        >
-      </List>
+          </div>
+        </List.Item>
+      </Tree>
     </Col>
     <Col style="width: 96%">
       <LuckySheet

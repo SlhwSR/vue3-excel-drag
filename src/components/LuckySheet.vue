@@ -16,8 +16,8 @@
     </select>
     <a href="javascript:void(0)" @click="downloadExcel"
       >Download source xlsx file</a
-    >
-    <!-- {{ x }} -->
+    > 
+    <!-- {{ x }} -->   
   </div>
   <div id="luckysheet"></div>
   <div v-show="isMaskShow" id="tip">Downloading</div>

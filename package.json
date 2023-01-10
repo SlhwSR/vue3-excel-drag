@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.2.0",
+    "@vue/babel-plugin-jsx": "^1.1.1",
     "vite": "^2.8.0"
   },
   "license": "MIT"
