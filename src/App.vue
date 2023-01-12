@@ -3,7 +3,7 @@
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
 import LuckySheet from "./components/LuckySheet.vue";
 import { Col, List, Row, Tree } from "ant-design-vue";
-import { ref, watch } from "vue";
+import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 const currentCount = ref(0);
 const list = ref([
   {
@@ -47,7 +47,17 @@ const isdrag = ref(false);
 const hanleList = (count) => {
   console.log(count);
   isdrag.value = true;
+  const text = document.createElement("span");
+  text.className = "follow";
+  text.style.display="inline-block"
+  text.style.width = "22px";
+  text.style.height = "22px";
+  text.style.backgroundColor = "red";
+  text.style.left = x.value;
+  text.style.top = y.value;
+  text.innerHTML = count;
   currentCount.value = count;
+  document.body.appendChild(text);
 };
 const treeData = [
   {
@@ -98,14 +108,22 @@ const treeData = [
 const overDrag = () => {
   if (isdrag.value === true) {
     console.log("-拖拽中");
+    const following = document.querySelector(".follow");
+    console.log(following);
+    following.style.left = x.value;
+    following.style.top = y.value;
+    document.body.appendChild(following);
   } else {
     return;
   }
 };
 const mouseUp = () => {
   // console.log("松开了");
+  window.removeEventListener("mousemove");
   isdrag.value = false;
 };
+const x = ref(0);
+const y = ref(0);
 const selectedKeys = ref(["0-0-0", "0-0-1"]);
 const checkedKeys = ref(["0-0-0", "0-0-1"]);
 const expandedKeys = ref([]);
@@ -125,6 +143,7 @@ const mouseOver = () => {
 };
 const cancelDrag = () => {
   isdrag.value = false;
+  // const res= document.getElementsByTagName("span")
 };
 const handleExpand = (keys, { expanded, node }) => {
   // node.parent add from 3.0.0-alpha.10
@@ -137,10 +156,21 @@ const handleExpand = (keys, { expanded, node }) => {
     expandedKeys.value = keys;
   }
 };
+onMounted(() => {
+  // if (isdrag.value === true) {
+  window.addEventListener("mousemove", ({ pageX, pageY }) => {
+    x.value = pageX;
+    y.value = pageY;
+  });
+  // }
+});
+onBeforeUnmount(() => {
+  window.removeEventListener("mousemove");
+});
 </script>
 <template>
   <Row :gutter="24">
-    <Col style="height: 900px">
+    <Col style="height: 900px; width: 150px">
       <!-- <List.Item
         @mouseover="mouseOver"
         @mouseleave="overDrag"
@@ -180,7 +210,7 @@ const handleExpand = (keys, { expanded, node }) => {
         </template>
       </Tree>
     </Col>
-    <Col style="width: 90%; height: 800px">
+    <Col style="width: 92%; height: 800px">
       <LuckySheet
         :isdrag="isdrag"
         :count="currentCount"

@@ -16,8 +16,10 @@
     </select>
     <a href="javascript:void(0)" @click="downloadExcel"
       >Download source xlsx file</a
-    > 
-    <!-- {{ x }} -->   
+    >
+    <Button type="primary" @click="handleSave" style="float: right"
+      >暂存</Button
+    >
   </div>
   <div id="luckysheet"></div>
   <div v-show="isMaskShow" id="tip">Downloading</div>
@@ -28,7 +30,7 @@ import { ref, onMounted, onBeforeUnmount, watch, onUpdated } from "vue";
 import { exportExcel } from "./export";
 import LuckyExcel from "luckyexcel";
 import logo from "@/assets/logo.png";
-import { Space } from "ant-design-vue";
+import { Space, Button } from "ant-design-vue";
 import { addLongtabListener } from "@/utils/longpress";
 const isMaskShow = ref(false);
 const selected = ref("");
@@ -156,7 +158,7 @@ const selectExcel = (evt) => {
 
       window.luckysheet.create({
         container: "luckysheet", //luckysheet is the container id
-        showinfobar: false,
+        showinfobar: true,
         data: exportJson.sheets,
         title: exportJson.info.name,
         userInfo: exportJson.info.name.creator,
@@ -181,6 +183,9 @@ const downloadExcel = () => {
   // }
   // elemIF.src = value;
   exportExcel(luckysheet.getAllSheets(), "下载");
+};
+const handleSave = () => {
+  console.log(luckysheet.getAllSheets()[0]);
 };
 const emitS = defineEmits(["cancelDrag"]);
 // !!! create luckysheet after mounted
@@ -209,10 +214,10 @@ onMounted(() => {
         if (props.isdrag === true) {
           luckysheet.setCellValue(r, c, props.count);
           console.log("-*----------变化");
-          // emitS();
           emitS("cancelDrag", () => {
             console.log("我尽力了");
           });
+          // window.removeEventListener("mousemove")
           // props.isdrag = false;
           return;
           // console.log(props.isdrag);
@@ -224,11 +229,33 @@ onMounted(() => {
   window.addEventListener("mousemove", ({ pageX, pageY }) => {
     x.value = pageX;
     y.value = pageY;
+    const follow = document.querySelector(".follow");
+    if (props.isdrag === true) {
+      console.log("//////////////////");
+      // follow.clientLeft = pageX;
+      follow.setAttribute("style", `left:${pageX}px;top:${pageY}px;position:absolute;z-index:9999`);
+      // follow.clientTop = pageY;
+      console.log(follow);
+    }else{
+      document.body.removeChild(follow)
+    }
+    
   });
+  // const text = document.querySelector(".follow");
+  // text.style.left = x.value;
+  // text.style.top = y.value;
+  // console.log("ffffffffffffffffffffffffffff");
+  // console.log(text);
   document.querySelector(".luckysheet-share-logo").remove();
+  // document.addEventListener("mousemove",(e)=>{
+  //   var listItem=document.querySelector(".ant-list-item div")
+  //   listItem[1]?.style.left=e.clientX+8+'px'
+  //   listItem[1]?.style.top=e.clientY+2+'px'
+  //   console.log(listItem[1]?.innerHTML);
+  // })
   document.onselectstart = new Function("event.returnValue=false");
   console.log("---------Props");
-  // console.log(isdrag);
+
   console.log(props);
 });
 onBeforeUnmount(() => {
