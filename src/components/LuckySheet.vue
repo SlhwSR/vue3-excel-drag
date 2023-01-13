@@ -233,13 +233,15 @@ onMounted(() => {
     if (props.isdrag === true) {
       console.log("//////////////////");
       // follow.clientLeft = pageX;
-      follow.setAttribute("style", `left:${pageX}px;top:${pageY}px;position:absolute;z-index:9999`);
+      follow.setAttribute(
+        "style",
+        `left:${pageX}px;top:${pageY}px;position:absolute;z-index:9999`
+      );
       // follow.clientTop = pageY;
       console.log(follow);
-    }else{
-      document.body.removeChild(follow)
+    } else {
+      document.body.removeChild(follow);
     }
-    
   });
   // const text = document.querySelector(".follow");
   // text.style.left = x.value;
