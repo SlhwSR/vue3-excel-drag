@@ -49,7 +49,7 @@ const hanleList = (count) => {
   isdrag.value = true;
   const text = document.createElement("span");
   text.className = "follow";
-  text.style.display="inline-block"
+  text.style.display = "inline-block";
   text.style.width = "22px";
   text.style.height = "22px";
   text.style.backgroundColor = "red";
