@@ -31,12 +31,16 @@ const exportExcel = function (luckysheet, value) {
     const blob = new Blob([data], {
       type: "application/vnd.ms-excel;charset=utf-8",
     });
-    console.log("导出成功！");
+    console.log("----导出的结果");
+    // console.log(Blob);
+    // console.log("导出成功！");
+    // console.log(data);
     FileSaver.saveAs(blob, `${value}.xlsx`);
   });
+  console.log("我的buffer");
+  console.log(buffer);
   return buffer;
 };
-
 var setMerge = function (luckyMerge = {}, worksheet) {
   const mergearr = Object.values(luckyMerge);
   mergearr.forEach(function (elem) {
@@ -343,5 +347,4 @@ function createCellPos(n) {
   }
   return s;
 }
-
 export { exportExcel };

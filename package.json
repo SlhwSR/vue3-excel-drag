@@ -24,6 +24,8 @@
     "axios": "^1.2.2",
     "exceljs": "^4.3.0",
     "file-saver": "^2.0.5",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.1",
     "luckyexcel": "^1.0.1",
     "vue": "^3.2.25",
     "vue3-draggable-resizable": "^1.6.5",

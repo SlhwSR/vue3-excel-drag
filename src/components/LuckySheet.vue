@@ -20,6 +20,9 @@
     <Button type="primary" @click="handleSave" style="float: right"
       >暂存</Button
     >
+    <Button type="primary" @click="logElement" style="float: right"
+      >打印</Button
+    >
   </div>
   <div id="luckysheet"></div>
   <div v-show="isMaskShow" id="tip">Downloading</div>
@@ -32,6 +35,9 @@ import LuckyExcel from "luckyexcel";
 import logo from "@/assets/logo.png";
 import { Space, Button } from "ant-design-vue";
 import { addLongtabListener } from "@/utils/longpress";
+import html2canvas from "html2canvas";
+import FileSaver from "file-saver";
+import jsPDF from "jspdf";
 const isMaskShow = ref(false);
 const selected = ref("");
 const jsonData = ref({});
@@ -86,6 +92,40 @@ const onEnd = (e) => {
 onUpdated(() => {
   console.log(props);
 });
+const uuid = () => {
+  var s = [];
+  var hexDigits = "0123456789abcdef";
+  for (var i = 0; i < 36; i++) {
+    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+  }
+  s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
+  s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
+  s[8] = s[13] = s[18] = s[23] = "-";
+  return s.join("");
+};
+const logElement = () => {
+  let uid = uuid();
+  // 截图区域是testCanvas
+  console.log(document.getElementById("luckysheetTableContent"));
+  // document.getElementById("luckysheetTableContent").style.height="1800px"
+  html2canvas(document.getElementById("luckysheetTableContent"), {
+    background: "#ffffff",
+    useCORS: true,
+  }).then(function (canvas) {
+    let contentWidth = canvas.width;
+    let contentHeight = canvas.height;
+    let imgWidth = 595.28;
+    let imgHeight = (592.28 / contentWidth) * contentHeight;
+    let pageData = canvas.toDataURL("image/jpeg", 3.0);
+    let pdf = new jsPDF("", "pt", "a4");
+    pdf.addImage(pageData, "JPEG", 0, 0, imgWidth, imgHeight);
+    pdf.save(uid + "**************.pdf");
+  });
+  // var canvas = document.getElementById("luckysheetTableContent");
+  // canvas.toBlob(function (blob) {
+  //   saveAs(blob, "测试.xlsx");
+  // });
+};
 const x = ref(0);
 const y = ref(0);
 const myArray = ref([
@@ -182,8 +222,17 @@ const downloadExcel = () => {
   //     document.body.appendChild(elemIF);
   // }
   // elemIF.src = value;
-  exportExcel(luckysheet.getAllSheets(), "下载");
+  exportExcel(luckysheet.getAllSheets(), "下载").then((res) => {
+    console.log(">>>>>>");
+    console.log(res);
+  });
 };
+// const logElement = () => {
+//   const table = document.querySelector(".luckysheet-grid-window-2");
+//   const canvas = document.querySelector(".luckysheetTableContent");
+//   console.log(canvas);
+//   console.log(table);
+// };
 const handleSave = () => {
   console.log(luckysheet.getAllSheets()[0]);
 };
@@ -225,6 +274,12 @@ onMounted(() => {
         // props.isdrag = false;
       },
     },
+    data: [
+      {
+        column: 23,
+        lang: "zh",
+      },
+    ],
   });
   window.addEventListener("mousemove", ({ pageX, pageY }) => {
     x.value = pageX;

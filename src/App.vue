@@ -50,11 +50,11 @@ const hanleList = (count) => {
   const text = document.createElement("span");
   text.className = "follow";
   text.style.display = "inline-block";
-  text.style.width = "22px";
-  text.style.height = "22px";
-  text.style.backgroundColor = "red";
+  text.style.width = "0px";
+  text.style.height = "0px";
+  text.style.backgroundColor = "#fff";
   text.style.left = x.value;
-  text.style.top = y.value;
+  text.style.top = y.value; 
   text.innerHTML = count;
   currentCount.value = count;
   document.body.appendChild(text);
