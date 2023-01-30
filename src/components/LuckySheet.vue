@@ -126,6 +126,13 @@ const logElement = () => {
   // document.getElementById("luckysheet-left-top").click();
   let src = window.luckysheet.getScreenshot();
   let $img = `<img src=${src} style="max-width: 90%;" />`;
+  let pdf = new jsPDF("", "pt", "a4");
+  // let imgWidth = 595.28;
+  // let contentWidth = 500;
+  // let contentHeight = 500;
+  // let imgHeight = (592.28 / contentWidth) * contentHeight;
+  // pdf.addImage(src, "JPEG", 0, 0, imgWidth, imgHeight);
+  // pdf.save(uid + "**************.pdf");
   console.log($img);
   // var canvas = document.getElementById("luckysheetTableContent");
   // canvas.toBlob(function (blob) {
