@@ -54,7 +54,7 @@ const hanleList = (count) => {
   text.style.height = "0px";
   text.style.backgroundColor = "#fff";
   text.style.left = x.value;
-  text.style.top = y.value; 
+  text.style.top = y.value;
   text.innerHTML = count;
   currentCount.value = count;
   document.body.appendChild(text);

@@ -34,7 +34,7 @@ const exportExcel = function (luckysheet, value) {
     console.log("----导出的结果");
     // console.log(Blob);
     // console.log("导出成功！");
-    // console.log(data);
+    console.log(data);
     FileSaver.saveAs(blob, `${value}.xlsx`);
   });
   console.log("我的buffer");

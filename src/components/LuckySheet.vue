@@ -34,9 +34,7 @@ import { exportExcel } from "./export";
 import LuckyExcel from "luckyexcel";
 import logo from "@/assets/logo.png";
 import { Space, Button } from "ant-design-vue";
-import { addLongtabListener } from "@/utils/longpress";
 import html2canvas from "html2canvas";
-import FileSaver from "file-saver";
 import jsPDF from "jspdf";
 const isMaskShow = ref(false);
 const selected = ref("");
@@ -106,12 +104,15 @@ const uuid = () => {
 const logElement = () => {
   let uid = uuid();
   // 截图区域是testCanvas
+  //planA
   console.log(document.getElementById("luckysheetTableContent"));
-  // document.getElementById("luckysheetTableContent").style.height="1800px"
+  document.getElementById("luckysheetTableContent").style.height = "1800px";
   html2canvas(document.getElementById("luckysheetTableContent"), {
     background: "#ffffff",
     useCORS: true,
   }).then(function (canvas) {
+    console.log("----------------------------------------------------------");
+    console.log(canvas);
     let contentWidth = canvas.width;
     let contentHeight = canvas.height;
     let imgWidth = 595.28;
@@ -121,6 +122,11 @@ const logElement = () => {
     pdf.addImage(pageData, "JPEG", 0, 0, imgWidth, imgHeight);
     pdf.save(uid + "**************.pdf");
   });
+  //planB
+  // document.getElementById("luckysheet-left-top").click();
+  // let src = window.luckysheet.getScreenshot();
+  // let $img = `<img src=${src} style="max-width: 90%;" />`;
+  // console.log($img);
   // var canvas = document.getElementById("luckysheetTableContent");
   // canvas.toBlob(function (blob) {
   //   saveAs(blob, "测试.xlsx");
