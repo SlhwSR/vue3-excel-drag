@@ -105,28 +105,28 @@ const logElement = () => {
   let uid = uuid();
   // 截图区域是testCanvas
   //planA
-  console.log(document.getElementById("luckysheetTableContent"));
-  document.getElementById("luckysheetTableContent").style.height = "1800px";
-  html2canvas(document.getElementById("luckysheetTableContent"), {
-    background: "#ffffff",
-    useCORS: true,
-  }).then(function (canvas) {
-    console.log("----------------------------------------------------------");
-    console.log(canvas);
-    let contentWidth = canvas.width;
-    let contentHeight = canvas.height;
-    let imgWidth = 595.28;
-    let imgHeight = (592.28 / contentWidth) * contentHeight;
-    let pageData = canvas.toDataURL("image/jpeg", 3.0);
-    let pdf = new jsPDF("", "pt", "a4");
-    pdf.addImage(pageData, "JPEG", 0, 0, imgWidth, imgHeight);
-    pdf.save(uid + "**************.pdf");
-  });
+  // console.log(document.getElementById("luckysheetTableContent"));
+  // document.getElementById("luckysheetTableContent").style.height = "1800px";
+  // html2canvas(document.getElementById("luckysheetTableContent"), {
+  //   background: "#ffffff",
+  //   useCORS: true,
+  // }).then(function (canvas) {
+  //   console.log("----------------------------------------------------------");
+  //   console.log(canvas);
+  //   let contentWidth = canvas.width;
+  //   let contentHeight = canvas.height;
+  //   let imgWidth = 595.28;
+  //   let imgHeight = (592.28 / contentWidth) * contentHeight;
+  //   let pageData = canvas.toDataURL("image/jpeg", 3.0);
+  //   let pdf = new jsPDF("", "pt", "a4");
+  //   pdf.addImage(pageData, "JPEG", 0, 0, imgWidth, imgHeight);
+  //   pdf.save(uid + "**************.pdf");
+  // });
   //planB
   // document.getElementById("luckysheet-left-top").click();
-  // let src = window.luckysheet.getScreenshot();
-  // let $img = `<img src=${src} style="max-width: 90%;" />`;
-  // console.log($img);
+  let src = window.luckysheet.getScreenshot();
+  let $img = `<img src=${src} style="max-width: 90%;" />`;
+  console.log($img);
   // var canvas = document.getElementById("luckysheetTableContent");
   // canvas.toBlob(function (blob) {
   //   saveAs(blob, "测试.xlsx");
@@ -279,13 +279,26 @@ onMounted(() => {
         }
         // props.isdrag = false;
       },
+      onTogglePager:(pageConfig)=>{
+        console.log(pageConfig); 
+      }
     },
-    data: [
-      {
-        column: 23,
-        lang: "zh",
-      },
-    ],
+    showtoolbarConfig: {
+      screenshot: true,
+    },
+    pager: {
+      pageIndex: 1, //当前的页码
+      pageSize: 10, //每页显示多少行数据
+      total: 50, //数据总行数
+      selectOption: [10, 20], //允许设置每页行数的选项
+    },
+    // data: [
+    //   {
+    //     column: 23,
+    //     row: 10,
+    //     lang: "zh",
+    //   },
+    // ],
   });
   window.addEventListener("mousemove", ({ pageX, pageY }) => {
     x.value = pageX;
