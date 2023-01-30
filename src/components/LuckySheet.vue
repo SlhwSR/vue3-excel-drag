@@ -279,19 +279,19 @@ onMounted(() => {
         }
         // props.isdrag = false;
       },
-      onTogglePager:(pageConfig)=>{
-        console.log(pageConfig); 
-      }
+      onTogglePager: (pageConfig) => {
+        console.log(pageConfig);
+      },
     },
     showtoolbarConfig: {
       screenshot: true,
     },
-    pager: {
-      pageIndex: 1, //当前的页码
-      pageSize: 10, //每页显示多少行数据
-      total: 50, //数据总行数
-      selectOption: [10, 20], //允许设置每页行数的选项
-    },
+    // pager: {
+    //   pageIndex: 1, //当前的页码
+    //   pageSize: 10, //每页显示多少行数据
+    //   total: 50, //数据总行数
+    //   selectOption: [10, 20], //允许设置每页行数的选项
+    // },
     // data: [
     //   {
     //     column: 23,
